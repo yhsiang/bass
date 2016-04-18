@@ -10,6 +10,7 @@ import (
 type Store interface {
   GetUser(string) (*models.User, error)
   GetUserList() ([]*models.User, error)
+  CreateUser(*models.User) (string, error)
 }
 
 func GetUser(c context.Context, id string) (*models.User, error) {
@@ -18,4 +19,8 @@ func GetUser(c context.Context, id string) (*models.User, error) {
 
 func GetUserList(c context.Context) ([]*models.User, error) {
   return FromContext(c).GetUserList()
+}
+
+func CreateUser(c context.Context, user *models.User) (string, error) {
+  return FromContext(c).CreateUser(user)
 }

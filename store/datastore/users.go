@@ -1,6 +1,7 @@
 package datastore
 
 import (
+  "encoding/json"
   "fmt"
 
   "github.com/yhsiang/bass/models"
@@ -24,14 +25,19 @@ func (db *datastore) GetUserList() ([]*models.User, error) {
 
   if err != nil {
     fmt.Println(err)
-    // return
   }
 
   var users = []*models.User{}
   err2 := rows.All(&users)
-  // if err2 != nil {
-  //   fmt.Println(err2)
-  //   return
-  // }
   return users, err2
+}
+
+func (db *datastore) CreateUser(user *models.User) (string, error) {
+  res, err := r.Table("users").Insert(user).RunWrite(db.session)
+  return res.GeneratedKeys[0], err
+}
+
+func printObj(v interface{}) {
+    vBytes, _ := json.Marshal(v)
+    fmt.Println(string(vBytes))
 }
