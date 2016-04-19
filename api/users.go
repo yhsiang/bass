@@ -4,6 +4,7 @@ import (
   "net/http"
 
   "github.com/gin-gonic/gin"
+  "github.com/asaskevich/govalidator"
 
   "github.com/yhsiang/bass/models"
   "github.com/yhsiang/bass/store"
@@ -19,18 +20,18 @@ func GetUsers(c *gin.Context) {
 }
 
 func PostUser(c *gin.Context) {
-  in := &models.User{}
-  err := c.Bind(in)
+  user := &models.User{}
+  err := c.Bind(user)
   if err != nil {
     c.String(http.StatusBadRequest, err.Error())
     return
   }
 
-  user := &models.User{}
-  user.Username = in.Username
-  user.Email = in.Email
-  user.Avatar = in.Avatar
-  user.Active = true
+  _, err = govalidator.ValidateStruct(user)
+  if err != nil {
+    c.String(http.StatusBadRequest, err.Error())
+    return
+  }
 
   id, err := store.CreateUser(c, user)
   if err != nil {
