@@ -25,6 +25,7 @@ func From(session *r.Session) store.Store {
 func Init() *r.Session {
   var err error
   var session *r.Session
+  // FIXME: handle connection failed
   session, err = r.Connect(r.ConnectOpts{
     Address:  "localhost:28015",
     Database: "test",
