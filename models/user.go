@@ -6,6 +6,6 @@ type User struct {
   Username string `form:"username" gorethink:"username"`
   Password string `form:"password" binding:"required" gorethink:"password"`
   Avatar   string `form:"avatar" gorethink:"avatar"`
-  Active   bool `gorethink:"active"`
+  Active   bool `gorethink:"active,omitempty"`
   // LastLogin
 }

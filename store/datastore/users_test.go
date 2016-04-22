@@ -2,6 +2,7 @@ package datastore
 
 import (
   "testing"
+  "reflect"
 
   "github.com/yhsiang/bass/models"
 
@@ -10,30 +11,36 @@ import (
 )
 
 func TestUsers(t *testing.T) {
-    session := openTest()
-    store := From(session)
+  session := openTest()
+  store := From(session)
 
-    g := goblin.Goblin(t)
-    g.Describe("User", func() {
-      g.BeforeEach(func() {
-        // FIXME: prepare data here
-      })
+  g := goblin.Goblin(t)
+  g.Describe("User", func() {
+    var user models.User
 
-      g.It("Should Add a new User", func() {
-        user := models.User{
-          Username: "hana",
-          Email: "hanahsu@dopemusic.com",
-          Password: "hana1234",
-        }
-        // FIXME: check return id is string
-        _, err := store.CreateUser(&user)
-        g.Assert(err == nil).IsTrue()
-        // g.Assert().IsTrue()
-      })
-      g.AfterEach(func() {
-        r.Table("users").Delete().Run(session)
-      })
+    g.It("Should Add a new User", func() {
+      user.Username = "hana"
+      user.Email    = "hanahsu@dopemusic.com"
+      user.Password = "hana1234"
+
+      // FIXME: check return id is string
+      id, err := store.CreateUser(&user)
+      user.ID = id
+      g.Assert(err == nil).IsTrue()
+      g.Assert(reflect.TypeOf(id).String() == "string").IsTrue()
     })
 
+    g.It("Should Update a User", func() {
+      var u = map[string]interface{}{
+        "Username": "hanahsu",
+      }
+      resp, err := store.UpdateUser(user.ID, u)
+      g.Assert(err == nil).IsTrue()
+      g.Assert(resp).Equal(1)
+    })
 
+    g.After(func() {
+      r.Table("users").Delete().Run(session)
+    })
+  })
 }

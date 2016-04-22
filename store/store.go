@@ -11,6 +11,7 @@ type Store interface {
   GetUser(string) (*models.User, error)
   GetUserList() ([]*models.User, error)
   CreateUser(*models.User) (string, error)
+  UpdateUser(string, map[string]interface{}) (int, error)
 }
 
 func GetUser(c context.Context, id string) (*models.User, error) {
@@ -23,4 +24,8 @@ func GetUserList(c context.Context) ([]*models.User, error) {
 
 func CreateUser(c context.Context, user *models.User) (string, error) {
   return FromContext(c).CreateUser(user)
+}
+
+func UpdateUser(c context.Context, id string, user map[string]interface{}) (int, error) {
+  return FromContext(c).UpdateUser(id, user)
 }

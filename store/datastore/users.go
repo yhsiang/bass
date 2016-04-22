@@ -9,7 +9,7 @@ import (
 )
 
 func (db *datastore) GetUser(id string) (*models.User, error) {
-  cursor, err := r.Table("users").Get(id).Run(db.session)
+  cursor, err := r.Table(userTable).Get(id).Run(db.session)
 
   var user = new(models.User)
   cursor.One(&user)
@@ -18,7 +18,7 @@ func (db *datastore) GetUser(id string) (*models.User, error) {
 }
 
 func (db *datastore) GetUserList() ([]*models.User, error) {
-  rows, err := r.Table("users").Run(db.session)
+  rows, err := r.Table(userTable).Run(db.session)
 
   if err != nil {
     fmt.Println(err)
@@ -30,13 +30,19 @@ func (db *datastore) GetUserList() ([]*models.User, error) {
 }
 
 func (db *datastore) CreateUser(user *models.User) (string, error) {
-  // FIXME: use envflag
   hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
   if err != nil {
       return "", err
   }
 
   user.Password = string(hashedPassword)
-  res, err := r.Table("users").Insert(user).RunWrite(db.session)
-  return res.GeneratedKeys[0], err
+  resp, err := r.Table(userTable).Insert(user).RunWrite(db.session)
+  return resp.GeneratedKeys[0], err
 }
+
+func (db *datastore) UpdateUser(id string, user map[string]interface{}) (int, error) {
+  resp, err := r.Table(userTable).Get(id).Update(user).RunWrite(db.session)
+  return resp.Replaced, err
+}
+
+const userTable = "users"
