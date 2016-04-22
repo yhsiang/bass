@@ -2,6 +2,7 @@ package datastore
 
 import (
   "fmt"
+  "golang.org/x/crypto/bcrypt"
 
   "github.com/yhsiang/bass/models"
   r "github.com/dancannon/gorethink"
@@ -29,6 +30,13 @@ func (db *datastore) GetUserList() ([]*models.User, error) {
 }
 
 func (db *datastore) CreateUser(user *models.User) (string, error) {
+  // FIXME: use envflag
+  hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+  if err != nil {
+      return "", err
+  }
+
+  user.Password = string(hashedPassword)
   res, err := r.Table("users").Insert(user).RunWrite(db.session)
   return res.GeneratedKeys[0], err
 }
