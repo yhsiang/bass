@@ -4,7 +4,7 @@ import (
   "testing"
   "reflect"
 
-  "github.com/yhsiang/bass/models"
+  "github.com/yhsiang/bass/model"
 
   "github.com/franela/goblin"
   r "github.com/dancannon/gorethink"
@@ -16,7 +16,7 @@ func TestUsers(t *testing.T) {
 
   g := goblin.Goblin(t)
   g.Describe("User", func() {
-    var user models.User
+    var user model.User
 
     g.It("Should Add a new User", func() {
       user.Username = "hana"

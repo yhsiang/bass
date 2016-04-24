@@ -2,27 +2,27 @@ package store
 
 import (
   // "io"
-  "github.com/yhsiang/bass/models"
+  "github.com/yhsiang/bass/model"
   "golang.org/x/net/context"
 )
 
 
 type Store interface {
-  GetUser(string) (*models.User, error)
-  GetUserList() ([]*models.User, error)
-  CreateUser(*models.User) (string, error)
+  GetUser(string) (*model.User, error)
+  GetUserList() ([]*model.User, error)
+  CreateUser(*model.User) (string, error)
   UpdateUser(string, map[string]interface{}) (int, error)
 }
 
-func GetUser(c context.Context, id string) (*models.User, error) {
+func GetUser(c context.Context, id string) (*model.User, error) {
   return FromContext(c).GetUser(id)
 }
 
-func GetUserList(c context.Context) ([]*models.User, error) {
+func GetUserList(c context.Context) ([]*model.User, error) {
   return FromContext(c).GetUserList()
 }
 
-func CreateUser(c context.Context, user *models.User) (string, error) {
+func CreateUser(c context.Context, user *model.User) (string, error) {
   return FromContext(c).CreateUser(user)
 }
 

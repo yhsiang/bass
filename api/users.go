@@ -6,7 +6,7 @@ import (
   "github.com/gin-gonic/gin"
   "github.com/asaskevich/govalidator"
 
-  "github.com/yhsiang/bass/models"
+  "github.com/yhsiang/bass/model"
   "github.com/yhsiang/bass/store"
 )
 
@@ -20,7 +20,7 @@ func GetUsers(c *gin.Context) {
 }
 
 func PostUser(c *gin.Context) {
-  user := &models.User{}
+  user := &model.User{}
   err := c.Bind(user)
   if err != nil {
     c.String(http.StatusBadRequest, err.Error())

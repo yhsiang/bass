@@ -4,32 +4,32 @@ import (
   "fmt"
   "golang.org/x/crypto/bcrypt"
 
-  "github.com/yhsiang/bass/models"
+  "github.com/yhsiang/bass/model"
   r "github.com/dancannon/gorethink"
 )
 
-func (db *datastore) GetUser(id string) (*models.User, error) {
+func (db *datastore) GetUser(id string) (*model.User, error) {
   cursor, err := r.Table(userTable).Get(id).Run(db.session)
 
-  var user = new(models.User)
+  var user = new(model.User)
   cursor.One(&user)
   cursor.Close()
   return user, err
 }
 
-func (db *datastore) GetUserList() ([]*models.User, error) {
+func (db *datastore) GetUserList() ([]*model.User, error) {
   rows, err := r.Table(userTable).Run(db.session)
 
   if err != nil {
     fmt.Println(err)
   }
 
-  var users = []*models.User{}
+  var users = []*model.User{}
   err2 := rows.All(&users)
   return users, err2
 }
 
-func (db *datastore) CreateUser(user *models.User) (string, error) {
+func (db *datastore) CreateUser(user *model.User) (string, error) {
   hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
   if err != nil {
       return "", err
