@@ -19,6 +19,10 @@ func Load(middleware ...gin.HandlerFunc) http.Handler {
     users.GET("", api.GetUsers)
     users.POST("", api.PostUser)
   }
+  files := e.Group("/api/files")
+  {
+    files.PUT("", api.UploadFile)
+  }
 
   return normalize(e)
 }
