@@ -3,10 +3,8 @@ package soundcloud
 import (
 	"bytes"
 	"encoding/json"
-	// "fmt"
 	"net/http"
 	"net/url"
-	// "io/ioutil"s
 )
 
 const (
@@ -64,11 +62,13 @@ func (c *Client) NewRequest(method, urlStr string, body interface{}) (*http.Requ
 	}
 
 	u := c.BaseURL.ResolveReference(rel)
+	q := u.Query()
 	if method == "GET" {
-		q := u.Query()
 		q.Set("client_id", c.oauth.ClientId)
-		u.RawQuery = q.Encode()
+	} else {
+		q.Set("oauth_token", c.oauth.AccessToken)
 	}
+	u.RawQuery = q.Encode()
 
 	buf := new(bytes.Buffer)
 	if body != nil {
@@ -77,7 +77,7 @@ func (c *Client) NewRequest(method, urlStr string, body interface{}) (*http.Requ
 			return nil, err
 		}
 	}
-	// fmt.Println(u.String())
+
 	req, err := http.NewRequest(method, u.String(), buf)
 	if err != nil {
 		return nil, err
@@ -89,11 +89,29 @@ func (c *Client) NewRequest(method, urlStr string, body interface{}) (*http.Requ
 	return req, nil
 }
 
+func (c *Client) NewFormRequest(urlStr string, body *bytes.Buffer) (*http.Request, error) {
+	rel, err := url.Parse(urlStr)
+	if err != nil {
+		return nil, err
+	}
+
+	u := c.BaseURL.ResolveReference(rel)
+	q := u.Query()
+	q.Set("oauth_token", c.oauth.AccessToken)
+	u.RawQuery = q.Encode()
+
+	req, err := http.NewRequest("POST", u.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 func (c *Client) Do(req *http.Request) (*http.Response, error) {
 	resp, err := c.client.Do(req)
 	if err != nil {
 		return nil, err
 	}
-
 	return resp, nil
 }
