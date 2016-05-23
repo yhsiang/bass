@@ -8,6 +8,7 @@ import (
 
 type Store interface {
 	GetUser(string) (*model.User, error)
+	GetUserBy(map[string]interface{}) (*model.User, error)
 	GetUserList() ([]*model.User, error)
 	CreateUser(*model.User) (string, error)
 	UpdateUser(string, map[string]interface{}) (int, error)
@@ -15,6 +16,10 @@ type Store interface {
 
 func GetUser(c context.Context, id string) (*model.User, error) {
 	return FromContext(c).GetUser(id)
+}
+
+func GetUserBy(c context.Context, query map[string]interface{}) (*model.User, error) {
+	return FromContext(c).GetUserBy(query)
 }
 
 func GetUserList(c context.Context) ([]*model.User, error) {

@@ -17,6 +17,15 @@ func (db *datastore) GetUser(id string) (*model.User, error) {
 	return user, err
 }
 
+func (db *datastore) GetUserBy(query map[string]interface{}) (*model.User, error) {
+	cursor, err := r.Table(userTable).Filter(query).Run(db.session)
+
+	var user = new(model.User)
+	cursor.One(&user)
+	cursor.Close()
+	return user, err
+}
+
 func (db *datastore) GetUserList() ([]*model.User, error) {
 	rows, err := r.Table(userTable).Run(db.session)
 
