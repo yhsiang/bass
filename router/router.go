@@ -7,13 +7,18 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/yhsiang/bass/api"
+	m "github.com/yhsiang/bass/router/middleware"
 )
 
 func Load(middleware ...gin.HandlerFunc) http.Handler {
 	e := gin.New()
+	auth := m.Auth()
 	e.Use(gin.Recovery())
 
 	e.Use(middleware...)
+	e.POST("/login", auth.LoginHandler)
+	e.Use(auth.MiddlewareFunc())
+	e.GET("/refresh_token", auth.RefreshHandler)
 	users := e.Group("/api/users")
 	{
 		users.GET("", api.GetUsers)
